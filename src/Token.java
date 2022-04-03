@@ -1,54 +1,53 @@
 
 public class Token {
-    public static int TIPO_INTEIRO = 0;
-    public static int TIPO_REAL = 1;
-    public static int TIPO_CHAR = 2;
-    public static int TIPO_IDENTIFICADOR = 3;
-    public static int TIPO_OPERADOR_RELACIONAL = 4;
-    public static int TIPO_OPERADOR_ARITMETICO = 5;
-    public static int TIPO_CARACTER_ESPECIAL = 6;
-    public static int TIPO_PALAVRA_RESERVADA = 7;
-    public static int TIPO_FIM_CODIGO = 99;
+    public static int INTEGER_TYPE = 0; // HAS
+    public static int REAL_TYPE = 1;// HAS
+    public static int CHAR_TYPE = 2; // HASN'T
+    public static int IDENTIFIER_TYPE = 3; // HAS
+    public static int OPERATOR_RELATIONAL_TYPE = 4; // HASN'T
+    public static int OPERATOR_ARITMETRIC_TYPE = 5; // HASN'T
+    public static int CHARACTER_SPECIAL_TYPE = 6; // HAS
+    public static int WORD_RESERVED_TYPE = 7; // HASN'T
+    public static int END_CODE = 99; // HAS
 
-    private int tipo; // tipo do token
-    private String lexema; // conteúdo do token
+    private int type; // tipo do token
+    private String lexeme; // conteúdo do token
 
-    public Token(String lexema, int tipo) {
-        this.lexema = lexema;
-        this.tipo = tipo;
+    public Token(String lexeme, int type) {
+        this.lexeme = lexeme;
+        this.type = type;
     }
 
     public String getLexema() {
-        return this.lexema;
+        return this.lexeme;
     }
 
-    public int getTipo() {
-        return this.tipo;
+    public int getType() {
+        return this.type;
     }
 
     @Override
     public String toString() {
-        switch (this.tipo) {
+        switch (this.type) {
             case 0:
-                return this.lexema + " - INTEIRO";
+                return this.lexeme + " - INTEIRO";
             case 1:
-                return this.lexema + " - REAL";
+                return this.lexeme + " - REAL";
             case 2:
-                return this.lexema + " - CHAR";
+                return this.lexeme + " - CHAR";
             case 3:
-                return this.lexema + " - IDENTIFICADOR";
+                return this.lexeme + " - IDENTIFICADOR";
             case 4:
-                return this.lexema + " - OPERADOR_RELACIONAL";
+                return this.lexeme + " - OPERADOR_RELACIONAL";
             case 5:
-                return this.lexema + " - OPERADOR_ARITMETICO";
+                return this.lexeme + " - OPERADOR_ARITMETICO";
             case 6:
-                return this.lexema + " - CARACTER_ESPECIAL";
+                return this.lexeme + " - CARACTER_ESPECIAL";
             case 7:
-                return this.lexema + " - PALAVRA_RESERVADA";
+                return this.lexeme + " - PALAVRA_RESERVADA";
             case 99:
-                return this.lexema + " - FIM_CODIGO";
+                return this.lexeme + " - FIM_CODIGO";
         }
         return "";
     }
-
 }

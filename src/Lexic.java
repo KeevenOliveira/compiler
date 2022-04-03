@@ -1,45 +1,39 @@
 
-// import java.io.File;
-// import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-// import java.util.Scanner;
-// import java.util.logging.Level;
-// import java.util.logging.Logger;
 
 public class Lexic {
     private char[] content;
-    private int indiceConteudo;
+    private int indexContent;
 
-    public Lexic(String caminhoCodigoFonte) {
+    public Lexic(String path) {
         try {
-            String conteudoStr;
-            conteudoStr = new String(Files.readAllBytes(Paths.get(caminhoCodigoFonte)));
-            this.content = conteudoStr.toCharArray();
-            this.indiceConteudo = 0;
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            String contentStr;
+            contentStr = new String(Files.readAllBytes(Paths.get(path)));
+            this.content = contentStr.toCharArray();
+            this.indexContent = 0;
+        } catch (IOException error) {
+            error.printStackTrace();
         }
     }
 
-    // Retorna próximo char
+    // return next chart
     private char nextChar() {
-        return this.content[this.indiceConteudo++];
+        return this.content[this.indexContent++];
     }
 
-    // Verifica existe próximo char ou chegou ao final do código fonte
+    // Verify if exists next char or if arrived to final of path
     private boolean hasNextChar() {
-        return indiceConteudo < this.content.length;
+        return indexContent < this.content.length;
     }
 
-    // Retrocede o índice que aponta para o "char da vez" em uma unidade
+    // Rewinds the index that see to "next char" in unity
     private void back() {
-        this.indiceConteudo--;
+        this.indexContent--;
     }
 
-    // Identificar se char é letra minúscula
-    // colocar maiúsculo
+    // identify if char is letter lowercase or uppercase
     private boolean isLetter(char c) {
         if ((c >= 'a') && (c <= 'z')) {
             return true;
@@ -50,12 +44,12 @@ public class Lexic {
         }
     }
 
-    // Identificar se char é dígito
+    // identify if char is digit
     private boolean isDigit(char c) {
         return (c >= '0') && (c <= '9');
     }
 
-    // Método retorna próximo token válido ou retorna mensagem de erro.
+    // method return next token valid or return message of error
     public Token getNextToken() {
         Token token = null;
         char character;
@@ -66,11 +60,8 @@ public class Lexic {
             character = this.nextChar();
             switch (state) {
                 case 0:
-                    if (character == ' ' || character == '\t' || character == '\n' || character == '\r') { // caracteres
-                                                                                                           // de espaço
-                                                                                                           // em branco
-                                                                                                           // ASCII
-                        // tradicionais
+                    // ASCII
+                    if (character == ' ' || character == '\t' || character == '\n' || character == '\r') {
                         state = 0;
                     } else if (this.isLetter(character) || character == '_') {
                         lexeme.append(character);
@@ -101,7 +92,7 @@ public class Lexic {
                         state = 1;
                     } else {
                         this.back();
-                        return new Token(lexeme.toString(), Token.TIPO_IDENTIFICADOR);
+                        return new Token(lexeme.toString(), Token.IDENTIFIER_TYPE);
                     }
                     break;
                 case 2:
@@ -113,7 +104,7 @@ public class Lexic {
                         state = 3;
                     } else {
                         this.back();
-                        return new Token(lexeme.toString(), Token.TIPO_INTEIRO);
+                        return new Token(lexeme.toString(), Token.INTEGER_TYPE);
                     }
                     break;
                 case 3:
@@ -130,14 +121,14 @@ public class Lexic {
                         state = 4;
                     } else {
                         this.back();
-                        return new Token(lexeme.toString(), Token.TIPO_REAL);
+                        return new Token(lexeme.toString(), Token.REAL_TYPE);
                     }
                     break;
                 case 5:
                     this.back();
-                    return new Token(lexeme.toString(), Token.TIPO_CARACTER_ESPECIAL);
+                    return new Token(lexeme.toString(), Token.CHARACTER_SPECIAL_TYPE);
                 case 99:
-                    return new Token(lexeme.toString(), Token.TIPO_FIM_CODIGO);
+                    return new Token(lexeme.toString(), Token.END_CODE);
             }
         }
         return token;
