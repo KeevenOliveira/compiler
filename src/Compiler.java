@@ -6,7 +6,5 @@ public class Compiler {
         while ((token = lexico.getNextToken()) != null) {
             System.out.println(token.toString());
         }
-
     }
-
 }

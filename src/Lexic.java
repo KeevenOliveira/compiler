@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.management.RuntimeErrorException;
+
 public class Lexic {
     private char[] content;
     private int indexContent;
@@ -14,7 +16,7 @@ public class Lexic {
             this.content = contentStr.toCharArray();
             this.indexContent = 0;
         } catch (IOException error) {
-            error.printStackTrace();
+            throw new RuntimeException("Erro: problema ao encontrar o arquivo");
         }
     }
 
@@ -63,19 +65,21 @@ public class Lexic {
                     // ASCII
                     if (character == ' ' || character == '\t' || character == '\n' || character == '\r') {
                         state = 0;
-                    } else if (this.isLetter(character) || character == '_') {
+                    } else if (character == '_') {
                         lexeme.append(character);
                         state = 1;
-                    } else if (this.isDigit(character)) {
+                    } else if (this.isLetter(character)) {
                         lexeme.append(character);
                         state = 2;
+                    } else if (this.isDigit(character)) {
+                        lexeme.append(character);
+                        state = 4;
                     } else if (character == ')' ||
                             character == '(' ||
                             character == '{' ||
                             character == '}' ||
                             character == ',' ||
                             character == ';') {
-                        lexeme.append(character);
                         state = 5;
                     } else if (character == '$') {
                         lexeme.append(character);
@@ -89,42 +93,67 @@ public class Lexic {
                 case 1:
                     if (this.isLetter(character) || this.isDigit(character) || character == '_') {
                         lexeme.append(character);
-                        state = 1;
+                        state = 3;
                     } else {
-                        this.back();
-                        return new Token(lexeme.toString(), Token.IDENTIFIER_TYPE);
+                        // if (lexeme.length() == 1) {
+                        throw new RuntimeException(
+                                "Erro: sequência de token inválida\"" + lexeme.toString() + "\"");
+                        // }
                     }
                     break;
                 case 2:
-                    if (this.isDigit(character)) {
+                    if (this.isLetter(character) || this.isDigit(character)) {
                         lexeme.append(character);
-                        state = 2;
-                    } else if (character == '.') {
+                        state = 3;
+                    } else {
+                        // if (lexeme.length() == 1) {
+                        this.back();
+                        return new Token(lexeme.toString(), Token.CHAR_TYPE);
+                        // }
+                    }
+                    break;
+                case 3:
+                    if (this.isLetter(character) || this.isDigit(character) || character == '_') {
                         lexeme.append(character);
                         state = 3;
                     } else {
                         this.back();
-                        return new Token(lexeme.toString(), Token.INTEGER_TYPE);
-                    }
-                    break;
-                case 3:
-                    if (this.isDigit(character)) {
-                        lexeme.append(character);
-                        state = 4;
-                    } else {
-                        throw new RuntimeException("Erro: número float inválido \"" + lexeme.toString() + "\"");
+                        return new Token(lexeme.toString(), Token.IDENTIFIER_TYPE);
                     }
                     break;
                 case 4:
                     if (this.isDigit(character)) {
                         lexeme.append(character);
                         state = 4;
+                    } else if (character == '.') {
+                        lexeme.append(character);
+                        state = 5;
+                    } else {
+                        if (lexeme.length() == 1) {
+                            return new Token(lexeme.toString(), Token.CHAR_TYPE);
+                        }
+                        this.back();
+                        return new Token(lexeme.toString(), Token.INTEGER_TYPE);
+                    }
+                    break;
+                case 5:
+                    if (this.isDigit(character)) {
+                        lexeme.append(character);
+                        state = 6;
+                    } else {
+                        throw new RuntimeException("Erro: número float inválido \"" + lexeme.toString() + "\"");
+                    }
+                    break;
+                case 6:
+                    if (this.isDigit(character)) {
+                        lexeme.append(character);
+                        state = 6;
                     } else {
                         this.back();
                         return new Token(lexeme.toString(), Token.REAL_TYPE);
                     }
                     break;
-                case 5:
+                case 7:
                     this.back();
                     return new Token(lexeme.toString(), Token.CHARACTER_SPECIAL_TYPE);
                 case 99:
