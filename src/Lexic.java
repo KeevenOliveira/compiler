@@ -127,6 +127,9 @@ public class Lexic {
                 case 5:
                     this.back();
                     return new Token(lexeme.toString(), Token.CHARACTER_SPECIAL_TYPE);
+                case 7:
+                    this.back();
+                    return new Token(lexeme.toString(), Token.WORD_RESERVED_TYPE);
                 case 99:
                     return new Token(lexeme.toString(), Token.END_CODE);
             }
