@@ -1,5 +1,4 @@
 
-
 public class Token {
     public static int TIPO_INTEIRO = 0;
     public static int TIPO_REAL = 1;
@@ -10,29 +9,28 @@ public class Token {
     public static int TIPO_CARACTER_ESPECIAL = 6;
     public static int TIPO_PALAVRA_RESERVADA = 7;
     public static int TIPO_FIM_CODIGO = 99;
-    
-    private int tipo; //tipo do token
-    private String lexema; //conteúdo do token
-    
-    public Token(String lexema, int tipo){
+
+    private int tipo; // tipo do token
+    private String lexema; // conteúdo do token
+
+    public Token(String lexema, int tipo) {
         this.lexema = lexema;
         this.tipo = tipo;
     }
-    
-    public String getLexema(){
+
+    public String getLexema() {
         return this.lexema;
     }
-    
-    public int getTipo(){
+
+    public int getTipo() {
         return this.tipo;
     }
-    
+
     @Override
-    public String toString()
-    {
-        switch(this.tipo){
+    public String toString() {
+        switch (this.tipo) {
             case 0:
-                return this.lexema + " - INTEIRO" ;
+                return this.lexema + " - INTEIRO";
             case 1:
                 return this.lexema + " - REAL";
             case 2:
@@ -48,10 +46,9 @@ public class Token {
             case 7:
                 return this.lexema + " - PALAVRA_RESERVADA";
             case 99:
-                return this.lexema + " - FIM_CODIGO";    
+                return this.lexema + " - FIM_CODIGO";
         }
         return "";
     }
-    
-    
+
 }
