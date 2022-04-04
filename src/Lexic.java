@@ -78,6 +78,9 @@ public class Lexic {
                     } else if (character == '<'|| character == '>'|| character == '!'){
                         lexeme.append(character);
                         state = 9;
+                    } else if (character == '+' || character == '/' || character == '*' || character == '-') {
+                        lexeme.append(character);
+                        state = 10;
                     } else if (character == ')' ||
                             character == '(' ||
                             character == '{' ||
@@ -174,7 +177,6 @@ public class Lexic {
                     break;
                 case 7:
                     this.back();
-                    String a = lexeme.toString();
                     return new Token(lexeme.toString(), Token.CHARACTER_SPECIAL_TYPE);
                 case 8:
                     if(character == '='){
@@ -203,6 +205,9 @@ public class Lexic {
                         throw new RuntimeException("Erro: operador relacional incorreto \"" + lexeme.toString() + "\"");
                     }
                     break;
+                case 10:
+                    this.back();
+                    return new Token(lexeme.toString(), Token.OPERATOR_ARITMETRIC_TYPE);
                 case 99:
                     return new Token(lexeme.toString(), Token.END_CODE);
             }
