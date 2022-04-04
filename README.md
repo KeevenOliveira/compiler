@@ -1,4 +1,6 @@
 # compiler
 Learning how developer a compiler
 
-📌 lexical analysis (in progress)
+📌 lexical analysis ✅
+
+📌 synthetic analysis (in progress)
