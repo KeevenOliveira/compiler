@@ -1,4 +1,3 @@
-
 public class Token {
     public static int INTEGER_TYPE = 0; // HAS
     public static int REAL_TYPE = 1;// HAS
