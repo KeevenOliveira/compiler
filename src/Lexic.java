@@ -207,7 +207,7 @@ public class Lexic {
                     break;
                 case 10:
                     this.back();
-                    return new Token(lexeme.toString(), Token.OPERATOR_ARITMETRIC_TYPE);
+                    return new Token(lexeme.toString(), Token.OPERATOR_ARITHMETIC_TYPE);
                 case 99:
                     return new Token(lexeme.toString(), Token.END_CODE);
             }
