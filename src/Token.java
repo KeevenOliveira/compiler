@@ -2,10 +2,9 @@ public class Token {
     public static int INTEGER_TYPE = 0; // HAS
     public static int REAL_TYPE = 1;// HAS
     public static int CHAR_TYPE = 2; // HAS
-    public static int CHAR_AND_INTEGER_TYPE = 3; // HAS
     public static int IDENTIFIER_TYPE = 4; // HAS
-    public static int OPERATOR_RELATIONAL_TYPE = 5; // HASN'T
-    public static int OPERATOR_ARITHMETIC_TYPE = 6; // HASN'T
+    public static int OPERATOR_RELATIONAL_TYPE = 5; // HAS
+    public static int OPERATOR_ARITHMETIC_TYPE = 6; // HAS
     public static int OPERATOR_ASSIGNMENT_TYPE = 7;
     public static int CHARACTER_SPECIAL_TYPE = 8; // HAS
     public static int WORD_RESERVED_TYPE = 9; // HAS
