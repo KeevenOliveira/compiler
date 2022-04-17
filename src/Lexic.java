@@ -72,8 +72,8 @@ public class Lexic {
                         lexeme.append(character);
                         state = 6;
                     } else if(character == '\'' || character == '\"') {
-                        lexeme.append(character);
-                        state = 4;
+                        this.back();
+                        state = 3;
                     } else if (character == '='){
                         lexeme.append(character);
                         state = 10;
@@ -141,7 +141,6 @@ public class Lexic {
                 case 5:
                     if(character == '\'' || character == '\"'){
                         lexeme.append(character);
-                        this.back();
                         return new Token(lexeme.toString(), Token.CHAR_TYPE);
                     }else{
                         throw new RuntimeException("Erro: sequência de Char inválida \"" + lexeme.toString() + "\"");
@@ -186,6 +185,7 @@ public class Lexic {
                         this.back();
                         return new Token(lexeme.toString(), Token.OPERATOR_ASSIGNMENT_TYPE);
                     }else{
+                        lexeme.append(character);
                        throw new RuntimeException("Erro: operador incorreto \"" + lexeme.toString() + "\"");
                     }
                     break;
