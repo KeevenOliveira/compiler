@@ -67,7 +67,7 @@ public class Lexic {
                         state = 1;
                     } else if (this.isLetter(character)) {
                         lexeme.append(character);
-                        state = 1;
+                        state = 2;
                     } else if (this.isDigit(character)) {
                         lexeme.append(character);
                         state = 6;
@@ -103,7 +103,7 @@ public class Lexic {
                 case 1:
                     if (this.isLetter(character) || this.isDigit(character) || character == '_') {
                         lexeme.append(character);
-                        state = 1;
+                        state = 2;
                     } else {
                         if ("if".contentEquals(lexeme.toString()) ||
                                 "main".contentEquals(lexeme.toString()) ||
@@ -121,6 +121,28 @@ public class Lexic {
                         this.back();
                         return new Token(lexeme.toString(), Token.IDENTIFIER_TYPE);
                     }
+                    break;
+                case 2:
+                if (this.isLetter(character) || this.isDigit(character) || character == '_') {
+                    lexeme.append(character);
+                    state = 2;
+                } else {
+                    if ("if".contentEquals(lexeme.toString()) ||
+                            "main".contentEquals(lexeme.toString()) ||
+                            "else".contentEquals(lexeme.toString()) ||
+                            "while".contentEquals(lexeme.toString()) ||
+                            "do".contentEquals(lexeme.toString()) ||
+                            "for".contentEquals(lexeme.toString()) ||
+                            "int".contentEquals(lexeme.toString()) ||
+                            "float".contentEquals(lexeme.toString()) ||
+                            "char".contentEquals(lexeme.toString())) {
+                        this.back();
+                        return new Token(lexeme.toString(), Token.WORD_RESERVED_TYPE);
+                    }
+
+                    this.back();
+                    return new Token(lexeme.toString(), Token.IDENTIFIER_TYPE);
+                }
                     break;
                 case 3:
                     if(character == '\'' || character == '\"'){
@@ -180,7 +202,12 @@ public class Lexic {
                 case 10:
                     if(character == '='){
                         lexeme.append(character);
-                        state = 11;
+                        if("==".contentEquals(lexeme.toString())){
+                            state = 0;
+                            return new Token(lexeme.toString(), Token.OPERATOR_RELATIONAL_TYPE);
+                        }else{
+                            state = 10;
+                        }
                     }else if(character == ' ' || character == '\t' || character == '\n' || character == '\r'){
                         this.back();
                         return new Token(lexeme.toString(), Token.OPERATOR_ASSIGNMENT_TYPE);
@@ -192,12 +219,19 @@ public class Lexic {
                 case 11:
                     if(character == '='){
                         lexeme.append(character);
+                        if("<=".contentEquals(lexeme.toString()) ||
+                        ">=".contentEquals(lexeme.toString()) ||
+                        "!=".contentEquals(lexeme.toString())){
+                            state = 0;
+                            return new Token(lexeme.toString(), Token.OPERATOR_RELATIONAL_TYPE);
+                        }else{
+                            throw new RuntimeException("Erro: operador relacional incorreto \"" + lexeme.toString() + "\"");
+                        }
                     } else if("<".contentEquals(lexeme.toString()) ||
                             ">".contentEquals(lexeme.toString()) ||
                             "<=".contentEquals(lexeme.toString()) ||
                             ">=".contentEquals(lexeme.toString()) ||
-                            "!=".contentEquals(lexeme.toString()) ||
-                            "==".contentEquals(lexeme.toString())
+                            "!=".contentEquals(lexeme.toString())
                     ){
                         this.back();
                         return new Token(lexeme.toString(), Token.OPERATOR_RELATIONAL_TYPE);
@@ -207,7 +241,6 @@ public class Lexic {
                     } else{
                         throw new RuntimeException("Erro: operador relacional incorreto \"" + lexeme.toString() + "\"");
                     }
-                    break;
                 case 12:
                     this.back();
                     return new Token(lexeme.toString(), Token.OPERATOR_ARITHMETIC_TYPE);
