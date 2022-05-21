@@ -71,13 +71,13 @@ public class Lexic {
                     } else if (this.isDigit(character)) {
                         lexeme.append(character);
                         state = 6;
-                    } else if(character == '\'' || character == '\"') {
+                    } else if (character == '\'' || character == '\"') {
                         this.back();
                         state = 3;
-                    } else if (character == '='){
+                    } else if (character == '=') {
                         lexeme.append(character);
                         state = 10;
-                    } else if (character == '<'|| character == '>'|| character == '!'){
+                    } else if (character == '<' || character == '>' || character == '!') {
                         lexeme.append(character);
                         state = 11;
                     } else if (character == '+' || character == '/' || character == '*' || character == '-') {
@@ -123,57 +123,58 @@ public class Lexic {
                     }
                     break;
                 case 2:
-                if (this.isLetter(character) || this.isDigit(character) || character == '_') {
-                    lexeme.append(character);
-                    state = 2;
-                } else {
-                    if ("if".contentEquals(lexeme.toString()) ||
-                            "main".contentEquals(lexeme.toString()) ||
-                            "else".contentEquals(lexeme.toString()) ||
-                            "while".contentEquals(lexeme.toString()) ||
-                            "do".contentEquals(lexeme.toString()) ||
-                            "for".contentEquals(lexeme.toString()) ||
-                            "int".contentEquals(lexeme.toString()) ||
-                            "float".contentEquals(lexeme.toString()) ||
-                            "char".contentEquals(lexeme.toString())) {
-                        this.back();
-                        return new Token(lexeme.toString(), Token.WORD_RESERVED_TYPE);
-                    }
+                    if (this.isLetter(character) || this.isDigit(character) || character == '_') {
+                        lexeme.append(character);
+                        state = 2;
+                    } else {
+                        if ("if".contentEquals(lexeme.toString()) ||
+                                "main".contentEquals(lexeme.toString()) ||
+                                "else".contentEquals(lexeme.toString()) ||
+                                "while".contentEquals(lexeme.toString()) ||
+                                "do".contentEquals(lexeme.toString()) ||
+                                "for".contentEquals(lexeme.toString()) ||
+                                "int".contentEquals(lexeme.toString()) ||
+                                "float".contentEquals(lexeme.toString()) ||
+                                "char".contentEquals(lexeme.toString())) {
+                            this.back();
+                            return new Token(lexeme.toString(), Token.WORD_RESERVED_TYPE);
+                        }
 
-                    this.back();
-                    return new Token(lexeme.toString(), Token.IDENTIFIER_TYPE);
-                }
+                        this.back();
+                        return new Token(lexeme.toString(), Token.IDENTIFIER_TYPE);
+                    }
                     break;
                 case 3:
-                    if(character == '\'' || character == '\"'){
+                    if (character == '\'' || character == '\"') {
                         lexeme.append(character);
                         state = 4;
-                    }else{
-                        throw new RuntimeException("Erro: sequência de caractere inválido \"" + lexeme.toString() + "\"");
+                    } else {
+                        throw new RuntimeException(
+                                "Erro: sequência de caractere inválido \"" + lexeme.toString() + "\"");
                     }
                     break;
                 case 4:
-                    if(this.isDigit(character) || this.isLetter(character)){
+                    if (this.isDigit(character) || this.isLetter(character)) {
                         lexeme.append(character);
                         state = 5;
-                    }else {
+                    } else {
                         throw new RuntimeException("Erro: sequência de Char inválida \"" + lexeme.toString() + "\"");
                     }
                     break;
                 case 5:
-                    if(character == '\'' || character == '\"'){
+                    if (character == '\'' || character == '\"') {
                         lexeme.append(character);
                         return new Token(lexeme.toString(), Token.CHAR_TYPE);
-                    }else{
+                    } else {
                         throw new RuntimeException("Erro: sequência de Char inválida \"" + lexeme.toString() + "\"");
-                    } 
+                    }
                 case 6:
                     if (this.isDigit(character)) {
                         lexeme.append(character);
-                        state = 4;
+                        state = 6;
                     } else if (character == '.') {
                         lexeme.append(character);
-                        state = 5;
+                        state = 7;
                     } else {
                         this.back();
                         return new Token(lexeme.toString(), Token.INTEGER_TYPE);
@@ -200,45 +201,45 @@ public class Lexic {
                     this.back();
                     return new Token(lexeme.toString(), Token.CHARACTER_SPECIAL_TYPE);
                 case 10:
-                    if(character == '='){
+                    if (character == '=') {
                         lexeme.append(character);
-                        if("==".contentEquals(lexeme.toString())){
+                        if ("==".contentEquals(lexeme.toString())) {
                             state = 0;
                             return new Token(lexeme.toString(), Token.OPERATOR_RELATIONAL_TYPE);
-                        }else{
+                        } else {
                             state = 10;
                         }
-                    }else if(character == ' ' || character == '\t' || character == '\n' || character == '\r'){
+                    } else if (character == ' ' || character == '\t' || character == '\n' || character == '\r') {
                         this.back();
                         return new Token(lexeme.toString(), Token.OPERATOR_ASSIGNMENT_TYPE);
-                    }else{
+                    } else {
                         lexeme.append(character);
-                       throw new RuntimeException("Erro: operador incorreto \"" + lexeme.toString() + "\"");
+                        throw new RuntimeException("Erro: operador incorreto \"" + lexeme.toString() + "\"");
                     }
                     break;
                 case 11:
-                    if(character == '='){
+                    if (character == '=') {
                         lexeme.append(character);
-                        if("<=".contentEquals(lexeme.toString()) ||
-                        ">=".contentEquals(lexeme.toString()) ||
-                        "!=".contentEquals(lexeme.toString())){
+                        if ("<=".contentEquals(lexeme.toString()) ||
+                                ">=".contentEquals(lexeme.toString()) ||
+                                "!=".contentEquals(lexeme.toString())) {
                             state = 0;
                             return new Token(lexeme.toString(), Token.OPERATOR_RELATIONAL_TYPE);
-                        }else{
-                            throw new RuntimeException("Erro: operador relacional incorreto \"" + lexeme.toString() + "\"");
+                        } else {
+                            throw new RuntimeException(
+                                    "Erro: operador relacional incorreto \"" + lexeme.toString() + "\"");
                         }
-                    } else if("<".contentEquals(lexeme.toString()) ||
+                    } else if ("<".contentEquals(lexeme.toString()) ||
                             ">".contentEquals(lexeme.toString()) ||
                             "<=".contentEquals(lexeme.toString()) ||
                             ">=".contentEquals(lexeme.toString()) ||
-                            "!=".contentEquals(lexeme.toString())
-                    ){
+                            "!=".contentEquals(lexeme.toString())) {
                         this.back();
                         return new Token(lexeme.toString(), Token.OPERATOR_RELATIONAL_TYPE);
-                    }else if(character == ' ' || character == '\t' || character == '\n' || character == '\r'){
+                    } else if (character == ' ' || character == '\t' || character == '\n' || character == '\r') {
                         this.back();
                         return new Token(lexeme.toString(), Token.OPERATOR_ASSIGNMENT_TYPE);
-                    } else{
+                    } else {
                         throw new RuntimeException("Erro: operador relacional incorreto \"" + lexeme.toString() + "\"");
                     }
                 case 12:

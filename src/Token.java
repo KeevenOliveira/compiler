@@ -18,7 +18,7 @@ public class Token {
         this.type = type;
     }
 
-    public String getLexema() {
+    public String getLexeme() {
         return this.lexeme;
     }
 
