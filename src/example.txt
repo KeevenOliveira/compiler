@@ -1,6 +1,8 @@
-main(){
-    int a
+int main(){
+    int a;
     int b;
-    a  b + 10;
+    float c;
+    char c;
+    c = 1 + 2;
 }
 $

@@ -7,6 +7,12 @@ public class Syntactic {
     }
 
     public void S() { // initial state
+
+        this.token = this.lexic.getNextToken();
+        if (!token.getLexeme().equals("int")) {
+            throw new RuntimeException("You need declare 'int' in initial code near: " + this.token.getLexeme());
+        }
+
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals("main")) {
             throw new RuntimeException("You need declare 'main' in initial code");
@@ -51,7 +57,8 @@ public class Syntactic {
     private void CS() {
         if ((this.token.getType() == Token.IDENTIFIER_TYPE) ||
                 this.token.getLexeme().equals("int") ||
-                this.token.getLexeme().equals("float")) {
+                this.token.getLexeme().equals("float") ||
+                this.token.getLexeme().equals("char")) {
             C();
             CS();
         } else {
@@ -63,7 +70,8 @@ public class Syntactic {
         if (this.token.getType() == Token.IDENTIFIER_TYPE) {
             Attribution();
         } else if (this.token.getLexeme().equals("int") ||
-                this.token.getLexeme().equals("float")) {
+                this.token.getLexeme().equals("float") ||
+                this.token.getLexeme().equals("char")) {
             Declaration();
         } else {
             throw new RuntimeException("Expected one command near: " + this.token.getLexeme());
@@ -72,7 +80,8 @@ public class Syntactic {
 
     public void Declaration() {
         if (!(this.token.getLexeme().equals("int") ||
-                this.token.getLexeme().equals("float"))) {
+                this.token.getLexeme().equals("float") ||
+                this.token.getLexeme().equals("char"))) {
             throw new RuntimeException("Variable wrong near: " + this.token.getLexeme());
         }
         this.token = this.lexic.getNextToken();
