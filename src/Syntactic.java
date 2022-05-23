@@ -61,6 +61,8 @@ public class Syntactic {
                 this.token.getLexeme().equals("char")) {
             C();
             CS();
+        } else if (this.token.getLexeme().equals("if")) {
+            PR();
         } else {
 
         }
@@ -76,6 +78,56 @@ public class Syntactic {
         } else {
             throw new RuntimeException("Expected one command near: " + this.token.getLexeme());
         }
+    }
+
+    private void PR() {
+        if (!this.token.getLexeme().equals("if")) {
+            throw new RuntimeException("Word reserved wrong near: " + this.token.getLexeme());
+        }
+
+        this.token = this.lexic.getNextToken();
+        if (!token.getLexeme().equals("(")) {
+            throw new RuntimeException(
+                    "Does not exists open paratheses of 'if' operator near: " + this.token.getLexeme());
+        }
+        this.token = this.lexic.getNextToken();
+
+        ER();
+
+        this.token = this.lexic.getNextToken();
+        if (!token.getLexeme().equals(")")) {
+            throw new RuntimeException(
+                    "Does not exists close paratheses of 'if' operator near: " + this.token.getLexeme());
+        }
+
+        this.token = this.lexic.getNextToken();
+        B();
+    }
+
+    private void ER() {
+        if (!(this.token.getType() == Token.IDENTIFIER_TYPE ||
+                this.token.getType() == Token.REAL_TYPE ||
+                this.token.getType() == Token.INTEGER_TYPE)) {
+            throw new RuntimeException("Error inside condition of 'if' near: " + this.token.getLexeme());
+        }
+
+        this.token = this.lexic.getNextToken();
+
+        if (this.token.getType() != Token.OPERATOR_RELATIONAL_TYPE) {
+            throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
+        }
+
+        this.token = this.lexic.getNextToken();
+
+        if (!(this.token.getType() == Token.IDENTIFIER_TYPE ||
+                this.token.getType() == Token.REAL_TYPE ||
+                this.token.getType() == Token.INTEGER_TYPE)) {
+            throw new RuntimeException("Error after operator regular of 'if' near: " + this.token.getLexeme());
+        }
+    }
+
+    private void CB() {
+
     }
 
     public void Declaration() {
