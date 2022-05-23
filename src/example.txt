@@ -5,5 +5,6 @@ int main(){
     char c;
     c = 1 + 2;
     if(a < b){}
+    while()
 }
 $

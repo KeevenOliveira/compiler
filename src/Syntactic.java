@@ -38,6 +38,7 @@ public class Syntactic {
 
     }
 
+    // Case/Bloco
     private void B() {
         if (!this.token.getLexeme().equals("{")) {
             throw new RuntimeException("Error: Expected open braces");
@@ -54,6 +55,7 @@ public class Syntactic {
         this.token = this.lexic.getNextToken();
     }
 
+    // Command
     private void CS() {
         if ((this.token.getType() == Token.IDENTIFIER_TYPE) ||
                 this.token.getLexeme().equals("int") ||
@@ -63,8 +65,8 @@ public class Syntactic {
             CS();
         } else if (this.token.getLexeme().equals("if")) {
             PR();
-        } else {
-
+        } else if (this.token.getLexeme().equals("while")) {
+            RL();
         }
     }
 
@@ -80,6 +82,29 @@ public class Syntactic {
         }
     }
 
+    // While // Repeat Loop
+    private void RL() {
+        if (!this.token.getLexeme().equals("while")) {
+            throw new RuntimeException("Word reserved wrong near: " + this.token.getLexeme());
+        }
+
+        this.token = this.lexic.getNextToken();
+        if (!token.getLexeme().equals("(")) {
+            throw new RuntimeException(
+                    "Does not exists open paratheses of 'while' operator near: " + this.token.getLexeme());
+        }
+        this.token = this.lexic.getNextToken();
+
+        ER();
+
+        this.token = this.lexic.getNextToken();
+        if (!token.getLexeme().equals(")")) {
+            throw new RuntimeException(
+                    "Does not exists close paratheses of 'while' operator near: " + this.token.getLexeme());
+        }
+    }
+
+    // If
     private void PR() {
         if (!this.token.getLexeme().equals("if")) {
             throw new RuntimeException("Word reserved wrong near: " + this.token.getLexeme());
@@ -101,6 +126,8 @@ public class Syntactic {
         }
 
         this.token = this.lexic.getNextToken();
+        // CB();
+
         B();
     }
 
@@ -127,6 +154,11 @@ public class Syntactic {
     }
 
     private void CB() {
+        if (this.token.getType() == Token.IDENTIFIER_TYPE) {
+            Attribution();
+        } else {
+            B();
+        }
 
     }
 
