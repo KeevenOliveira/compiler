@@ -1,10 +1,4 @@
 int main(){
-    int a;
-    int b;
-    float c;
-    char c;
-    c = 1 + 2;
-    if(a < b){}
-    while()
+    
 }
 $

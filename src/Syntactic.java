@@ -46,34 +46,50 @@ public class Syntactic {
 
         this.token = this.lexic.getNextToken();
 
-        CS();
+        CM();
 
         if (!this.token.getLexeme().equals("}")) {
-            throw new RuntimeException("Error: Expected close braces");
+            throw new RuntimeException("Error: Expected close braces, near: " + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
     }
 
     // Command
-    private void CS() {
-        if ((this.token.getType() == Token.IDENTIFIER_TYPE) ||
-                this.token.getLexeme().equals("int") ||
+    private void CM() {
+        if (this.token.getLexeme().equals("int") ||
                 this.token.getLexeme().equals("float") ||
                 this.token.getLexeme().equals("char")) {
-            C();
-            CS();
+            DEC();
+            CM();
+        } else if (this.token.getLexeme().equals("{") ||
+                this.token.getType() == Token.IDENTIFIER_TYPE) {
+            CB();
         } else if (this.token.getLexeme().equals("if")) {
             PR();
         } else if (this.token.getLexeme().equals("while")) {
             RL();
+        } else if (this.token.getLexeme().equals("}")) {
+            return;
+        } else {
+            throw new RuntimeException("Error: Expected command, near: " + this.token.getLexeme());
         }
     }
 
-    private void C() {
-        if (this.token.getType() == Token.IDENTIFIER_TYPE) {
+    private void CB() {
+        if (this.token.getLexeme().equals("{")) {
+            B();
+        } else if (this.token.getType() == Token.IDENTIFIER_TYPE) {
             Attribution();
-        } else if (this.token.getLexeme().equals("int") ||
+        } else {
+            throw new RuntimeException("Error in command basic near: " +
+                    this.token.getLexeme());
+        }
+    }
+
+    // Declaration
+    private void DEC() {
+        if (this.token.getLexeme().equals("int") ||
                 this.token.getLexeme().equals("float") ||
                 this.token.getLexeme().equals("char")) {
             Declaration();
@@ -102,9 +118,12 @@ public class Syntactic {
             throw new RuntimeException(
                     "Does not exists close paratheses of 'while' operator near: " + this.token.getLexeme());
         }
+        this.token = this.lexic.getNextToken();
+
+        CM();
     }
 
-    // If
+    // Relational
     private void PR() {
         if (!this.token.getLexeme().equals("if")) {
             throw new RuntimeException("Word reserved wrong near: " + this.token.getLexeme());
@@ -126,11 +145,18 @@ public class Syntactic {
         }
 
         this.token = this.lexic.getNextToken();
-        // CB();
 
-        B();
+        CM();
+
+        // Finished command if   
+
+        if (this.token.getLexeme().equals("else")) {
+            this.token = this.lexic.getNextToken();
+            CM();
+        }
     }
 
+    // Expression Relational
     private void ER() {
         if (!(this.token.getType() == Token.IDENTIFIER_TYPE ||
                 this.token.getType() == Token.REAL_TYPE ||
@@ -151,15 +177,6 @@ public class Syntactic {
                 this.token.getType() == Token.INTEGER_TYPE)) {
             throw new RuntimeException("Error after operator regular of 'if' near: " + this.token.getLexeme());
         }
-    }
-
-    private void CB() {
-        if (this.token.getType() == Token.IDENTIFIER_TYPE) {
-            Attribution();
-        } else {
-            B();
-        }
-
     }
 
     public void Declaration() {
