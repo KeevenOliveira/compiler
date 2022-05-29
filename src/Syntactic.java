@@ -65,6 +65,7 @@ public class Syntactic {
         } else if (this.token.getLexeme().equals("{") ||
                 this.token.getType() == Token.IDENTIFIER_TYPE) {
             CB();
+            CM();
         } else if (this.token.getLexeme().equals("if")) {
             PR();
         } else if (this.token.getLexeme().equals("while")) {
@@ -148,7 +149,7 @@ public class Syntactic {
 
         CM();
 
-        // Finished command if   
+        // Finished command if
 
         if (this.token.getLexeme().equals("else")) {
             this.token = this.lexic.getNextToken();
@@ -197,40 +198,32 @@ public class Syntactic {
     }
 
     private void Attribution() {
-        if (this.token.getType() != Token.IDENTIFIER_TYPE) {
-            throw new RuntimeException("Error in attribution near: " + this.token.getLexeme());
-        }
+        if (this.token.getType() == Token.IDENTIFIER_TYPE) {
+            this.token = this.lexic.getNextToken();
 
-        this.token = this.lexic.getNextToken();
-        if (this.token.getType() != Token.OPERATOR_ASSIGNMENT_TYPE) {
+            if (!this.token.getLexeme().equals("=")) {
+                throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
+            }
+
+            this.token = this.lexic.getNextToken();
+
+            EXP();
+
+            if (!this.token.getLexeme().equals(";")) {
+                throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
+            }
+
+            this.token = this.lexic.getNextToken();
+        } else {
             throw new RuntimeException("Error in attribution near: " + this.token.getLexeme());
         }
-        this.token = this.lexic.getNextToken();
-        E();
-        if (!this.token.getLexeme().equals(";")) {
-            throw new RuntimeException("Error in attribution near:" + this.token.getLexeme());
-        }
-        this.token = this.lexic.getNextToken();
     }
 
-    private void E() {
+    private void EXP() {
         if (this.token.getType() == Token.INTEGER_TYPE ||
                 this.token.getType() == Token.REAL_TYPE ||
                 this.token.getType() == Token.IDENTIFIER_TYPE) {
             this.token = this.lexic.getNextToken();
-
-            if (this.token.getType() != Token.OPERATOR_ARITHMETIC_TYPE) {
-                throw new RuntimeException("Error while attribution one variable near:" + this.token.getLexeme());
-            }
-            this.token = this.lexic.getNextToken();
-
-            if (this.token.getType() == Token.INTEGER_TYPE ||
-                    this.token.getType() == Token.REAL_TYPE ||
-                    this.token.getType() == Token.IDENTIFIER_TYPE) {
-                this.token = this.lexic.getNextToken();
-            } else {
-                throw new RuntimeException("Error while attribution one variable near: " + this.token.getLexeme());
-            }
         } else {
             throw new RuntimeException("Error in attribution near: " + this.token.getLexeme());
         }

@@ -1,4 +1,12 @@
 int main(){
-    
+    int a;
+    int b;
+
+    a = b;
+    int c;
+    if(a < b){
+        int c
+        b = c;
+    }
 }
 $

@@ -11,6 +11,7 @@ public class Lexic {
             String contentStr;
             contentStr = new String(Files.readAllBytes(Paths.get(path)));
             this.content = contentStr.toCharArray();
+            contentStr.
             this.indexContent = 0;
         } catch (IOException error) {
             throw new RuntimeException("Erro: problema ao encontrar o arquivo");
