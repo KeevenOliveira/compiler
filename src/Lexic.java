@@ -1,6 +1,10 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.stream.Stream;
 
 public class Lexic {
     private char[] content;
@@ -11,10 +15,28 @@ public class Lexic {
             String contentStr;
             contentStr = new String(Files.readAllBytes(Paths.get(path)));
             this.content = contentStr.toCharArray();
-            contentStr.
             this.indexContent = 0;
         } catch (IOException error) {
             throw new RuntimeException("Erro: problema ao encontrar o arquivo");
+        }
+    }
+
+    public void getColumnAndLine(String tokenError) throws FileNotFoundException {
+        try (BufferedReader inputStream = new BufferedReader(new FileReader("src//example.txt"))) {
+            Stream<String> read = inputStream.lines();
+            Object[] test = read.toArray();
+            for (int i = 0; i < test.length; i++) {
+                int value = test[i].toString().indexOf(tokenError);
+                if (value != -1) {
+                    System.out.println("Posição: " + value);
+                    System.out.println("Linha: " + i);
+                    break;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw e;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

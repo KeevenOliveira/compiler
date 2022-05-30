@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+
 public class Syntactic {
     private Lexic lexic;
     private Token token;
@@ -6,26 +8,32 @@ public class Syntactic {
         this.lexic = lexic;
     }
 
-    public void S() { // initial state
+    public void S() throws FileNotFoundException { // initial state
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals("int")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("You need declare 'int' in initial code near: " + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals("main")) {
-            throw new RuntimeException("You need declare 'main' in initial code");
+            this.lexic.getColumnAndLine(this.token.getLexeme());
+            throw new RuntimeException("You need declare 'main' in initial code, near: " + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals("(")) {
-            throw new RuntimeException("Does not exists open paratheses of main method");
+            this.lexic.getColumnAndLine(this.token.getLexeme());
+            throw new RuntimeException(
+                    "Does not exists open paratheses of main method, near: " + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals(")")) {
-            throw new RuntimeException("Does not exists close paratheses of main method");
+            this.lexic.getColumnAndLine(this.token.getLexeme());
+            throw new RuntimeException(
+                    "Does not exists close paratheses of main method, near: " + this.token.getLexeme());
         }
         this.token = this.lexic.getNextToken();
 
@@ -33,15 +41,17 @@ public class Syntactic {
         if (this.token.getType() == Token.END_CODE) {
             System.out.println("The code is working, analystic syntatic completed!");
         } else {
-            throw new RuntimeException("Your code does not working normal");
+            this.lexic.getColumnAndLine(this.token.getLexeme());
+            throw new RuntimeException("Your code does not working normal, near: " + this.token.getLexeme());
         }
 
     }
 
     // Case/Bloco
-    private void B() {
+    private void B() throws FileNotFoundException {
         if (!this.token.getLexeme().equals("{")) {
-            throw new RuntimeException("Error: Expected open braces");
+            this.lexic.getColumnAndLine(this.token.getLexeme());
+            throw new RuntimeException("Error: Expected open braces, near" + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
@@ -49,6 +59,7 @@ public class Syntactic {
         CM();
 
         if (!this.token.getLexeme().equals("}")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error: Expected close braces, near: " + this.token.getLexeme());
         }
 
@@ -56,7 +67,7 @@ public class Syntactic {
     }
 
     // Command
-    private void CM() {
+    private void CM() throws FileNotFoundException {
         if (this.token.getLexeme().equals("int") ||
                 this.token.getLexeme().equals("float") ||
                 this.token.getLexeme().equals("char")) {
@@ -73,40 +84,45 @@ public class Syntactic {
         } else if (this.token.getLexeme().equals("}")) {
             return;
         } else {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error: Expected command, near: " + this.token.getLexeme());
         }
     }
 
-    private void CB() {
+    private void CB() throws FileNotFoundException {
         if (this.token.getLexeme().equals("{")) {
             B();
         } else if (this.token.getType() == Token.IDENTIFIER_TYPE) {
             Attribution();
         } else {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error in command basic near: " +
                     this.token.getLexeme());
         }
     }
 
     // Declaration
-    private void DEC() {
+    private void DEC() throws FileNotFoundException {
         if (this.token.getLexeme().equals("int") ||
                 this.token.getLexeme().equals("float") ||
                 this.token.getLexeme().equals("char")) {
             Declaration();
         } else {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Expected one command near: " + this.token.getLexeme());
         }
     }
 
     // While // Repeat Loop
-    private void RL() {
+    private void RL() throws FileNotFoundException {
         if (!this.token.getLexeme().equals("while")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Word reserved wrong near: " + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals("(")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException(
                     "Does not exists open paratheses of 'while' operator near: " + this.token.getLexeme());
         }
@@ -116,6 +132,7 @@ public class Syntactic {
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals(")")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException(
                     "Does not exists close paratheses of 'while' operator near: " + this.token.getLexeme());
         }
@@ -125,13 +142,15 @@ public class Syntactic {
     }
 
     // Relational
-    private void PR() {
+    private void PR() throws FileNotFoundException {
         if (!this.token.getLexeme().equals("if")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Word reserved wrong near: " + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals("(")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException(
                     "Does not exists open paratheses of 'if' operator near: " + this.token.getLexeme());
         }
@@ -141,6 +160,7 @@ public class Syntactic {
 
         this.token = this.lexic.getNextToken();
         if (!token.getLexeme().equals(")")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException(
                     "Does not exists close paratheses of 'if' operator near: " + this.token.getLexeme());
         }
@@ -158,16 +178,18 @@ public class Syntactic {
     }
 
     // Expression Relational
-    private void ER() {
+    private void ER() throws FileNotFoundException {
         if (!(this.token.getType() == Token.IDENTIFIER_TYPE ||
                 this.token.getType() == Token.REAL_TYPE ||
                 this.token.getType() == Token.INTEGER_TYPE)) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error inside condition of 'if' near: " + this.token.getLexeme());
         }
 
         this.token = this.lexic.getNextToken();
 
         if (this.token.getType() != Token.OPERATOR_RELATIONAL_TYPE) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
         }
 
@@ -176,32 +198,37 @@ public class Syntactic {
         if (!(this.token.getType() == Token.IDENTIFIER_TYPE ||
                 this.token.getType() == Token.REAL_TYPE ||
                 this.token.getType() == Token.INTEGER_TYPE)) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error after operator regular of 'if' near: " + this.token.getLexeme());
         }
     }
 
-    public void Declaration() {
+    public void Declaration() throws FileNotFoundException {
         if (!(this.token.getLexeme().equals("int") ||
                 this.token.getLexeme().equals("float") ||
                 this.token.getLexeme().equals("char"))) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Variable wrong near: " + this.token.getLexeme());
         }
         this.token = this.lexic.getNextToken();
         if (this.token.getType() != Token.IDENTIFIER_TYPE) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Expected one command near: " + this.token.getLexeme());
         }
         this.token = this.lexic.getNextToken();
         if (!this.token.getLexeme().equalsIgnoreCase(";")) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Variable wrong near: " + this.token.getLexeme());
         }
         this.token = this.lexic.getNextToken();
     }
 
-    private void Attribution() {
+    private void Attribution() throws FileNotFoundException {
         if (this.token.getType() == Token.IDENTIFIER_TYPE) {
             this.token = this.lexic.getNextToken();
 
             if (!this.token.getLexeme().equals("=")) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
                 throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
             }
 
@@ -210,21 +237,24 @@ public class Syntactic {
             EXP();
 
             if (!this.token.getLexeme().equals(";")) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
                 throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
             }
 
             this.token = this.lexic.getNextToken();
         } else {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error in attribution near: " + this.token.getLexeme());
         }
     }
 
-    private void EXP() {
+    private void EXP() throws FileNotFoundException {
         if (this.token.getType() == Token.INTEGER_TYPE ||
                 this.token.getType() == Token.REAL_TYPE ||
                 this.token.getType() == Token.IDENTIFIER_TYPE) {
             this.token = this.lexic.getNextToken();
         } else {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error in attribution near: " + this.token.getLexeme());
         }
 
