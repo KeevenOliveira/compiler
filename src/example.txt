@@ -1,19 +1,9 @@
 int main(){
-    int a;
     int b;
-    char f;  
-
-    a = b;
-    int c;
-    if(a < b){
-        int c;
-        b = c;
-        f = "a";
-    }
-
+    int f;
     while(a > 5){
         int pp;
-        b = c;
+        b = c * 1 + a -4 /c;
         f = "2";
     }
 }

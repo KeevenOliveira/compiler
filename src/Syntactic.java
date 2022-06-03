@@ -256,6 +256,15 @@ public class Syntactic {
                 this.token.getType() == Token.IDENTIFIER_TYPE ||
                 this.token.getType() == Token.CHAR_TYPE) {
             this.token = this.lexic.getNextToken();
+            if (this.token.getLexeme().equals("*") ||
+                    this.token.getLexeme().equals("/") ||
+                    this.token.getLexeme().equals("+") ||
+                    this.token.getLexeme().equals("-")) {
+                this.token = this.lexic.getNextToken();
+                EXP();
+            } else if (this.token.getLexeme().equals(";")) {
+                return;
+            }
         } else {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error in attribution near: " + this.token.getLexeme());
