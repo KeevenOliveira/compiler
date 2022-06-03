@@ -174,6 +174,8 @@ public class Syntactic {
         if (this.token.getLexeme().equals("else")) {
             this.token = this.lexic.getNextToken();
             CM();
+        } else {
+            return;
         }
     }
 
@@ -251,7 +253,8 @@ public class Syntactic {
     private void EXP() throws FileNotFoundException {
         if (this.token.getType() == Token.INTEGER_TYPE ||
                 this.token.getType() == Token.REAL_TYPE ||
-                this.token.getType() == Token.IDENTIFIER_TYPE) {
+                this.token.getType() == Token.IDENTIFIER_TYPE ||
+                this.token.getType() == Token.CHAR_TYPE) {
             this.token = this.lexic.getNextToken();
         } else {
             this.lexic.getColumnAndLine(this.token.getLexeme());
