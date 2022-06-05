@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 public class Syntactic {
     private Lexic lexic;
     private Token token;
+    private CircularLinkedList semantic = new CircularLinkedList();
 
     public Syntactic(Lexic lexic) {
         this.lexic = lexic;
@@ -44,11 +45,12 @@ public class Syntactic {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Your code does not working normal, near: " + this.token.getLexeme());
         }
-
     }
 
     // Case/Bloco
     private void B() throws FileNotFoundException {
+        semantic = new CircularLinkedList();
+
         if (!this.token.getLexeme().equals("{")) {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error: Expected open braces, near" + this.token.getLexeme());
@@ -206,6 +208,7 @@ public class Syntactic {
     }
 
     public void Declaration() throws FileNotFoundException {
+        int type = this.token.getType();
         if (!(this.token.getLexeme().equals("int") ||
                 this.token.getLexeme().equals("float") ||
                 this.token.getLexeme().equals("char"))) {
@@ -217,6 +220,9 @@ public class Syntactic {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Expected one command near: " + this.token.getLexeme());
         }
+        String variable = this.token.getLexeme();
+
+        semantic.addLast(type, variable);
         this.token = this.lexic.getNextToken();
         if (!this.token.getLexeme().equalsIgnoreCase(";")) {
             this.lexic.getColumnAndLine(this.token.getLexeme());
@@ -227,6 +233,17 @@ public class Syntactic {
 
     private void Attribution() throws FileNotFoundException {
         if (this.token.getType() == Token.IDENTIFIER_TYPE) {
+            String variable = this.token.getLexeme();
+            CircularListNode node = semantic.search(variable);
+            if (node == null) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Variable not declared near: " + this.token.getLexeme());
+            }
+            if (node.getType() != this.token.getType()) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Variable with type different, near: " + this.token.getLexeme());
+            }
+
             this.token = this.lexic.getNextToken();
 
             if (!this.token.getLexeme().equals("=")) {
