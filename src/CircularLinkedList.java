@@ -1,3 +1,4 @@
+import java.util.Objects;
 
 public class CircularLinkedList {
 
@@ -81,7 +82,7 @@ public class CircularLinkedList {
     public CircularListNode search(String variable) {
         CircularListNode currentNode = getHead();
         do {
-            if (currentNode.getVariable() == variable) {
+            if (Objects.equals(currentNode.getVariable(), variable)) {
                 return currentNode;
             }
             currentNode = currentNode.getNext();

@@ -200,7 +200,7 @@ public class Lexic {
                         state = 7;
                     } else {
                         this.back();
-                        return new Token(lexeme.toString(), Token.INTEGER_TYPE);
+                        return new Token(lexeme.toString(), Token.REAL_TYPE);
                     }
                     break;
                 case 7:

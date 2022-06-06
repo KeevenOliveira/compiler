@@ -9,7 +9,6 @@ public class Token {
     public static int CHARACTER_SPECIAL_TYPE = 8; // HAS
     public static int WORD_RESERVED_TYPE = 9; // HAS
     public static int END_CODE = 99; // HAS
-
     private int type; // return token
     private String lexeme; // token content
 

@@ -4,6 +4,7 @@ public class Syntactic {
     private Lexic lexic;
     private Token token;
     private CircularLinkedList semantic = new CircularLinkedList();
+    private CircularListNode tokenAux;
 
     public Syntactic(Lexic lexic) {
         this.lexic = lexic;
@@ -208,21 +209,38 @@ public class Syntactic {
     }
 
     public void Declaration() throws FileNotFoundException {
-        int type = this.token.getType();
         if (!(this.token.getLexeme().equals("int") ||
                 this.token.getLexeme().equals("float") ||
                 this.token.getLexeme().equals("char"))) {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Variable wrong near: " + this.token.getLexeme());
         }
+        int type = 0;
+        if (this.token.getLexeme().equals("char")) {
+            type = Token.CHAR_TYPE;
+        } else if (this.token.getLexeme().equals("int")) {
+
+            type = Token.INTEGER_TYPE;
+        } else if (this.token.getLexeme().equals("float")) {
+            type = Token.REAL_TYPE;
+        }
         this.token = this.lexic.getNextToken();
+
         if (this.token.getType() != Token.IDENTIFIER_TYPE) {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Expected one command near: " + this.token.getLexeme());
         }
         String variable = this.token.getLexeme();
 
+        CircularListNode isDeclared = semantic.search(variable);
+
+        if (isDeclared != null) {
+            this.lexic.getColumnAndLine(this.token.getLexeme());
+            throw new RuntimeException("Variable already declared near: " + this.token.getLexeme());
+        }
+
         semantic.addLast(type, variable);
+
         this.token = this.lexic.getNextToken();
         if (!this.token.getLexeme().equalsIgnoreCase(";")) {
             this.lexic.getColumnAndLine(this.token.getLexeme());
@@ -234,14 +252,10 @@ public class Syntactic {
     private void Attribution() throws FileNotFoundException {
         if (this.token.getType() == Token.IDENTIFIER_TYPE) {
             String variable = this.token.getLexeme();
-            CircularListNode node = semantic.search(variable);
-            if (node == null) {
+            tokenAux = semantic.search(variable);
+            if (tokenAux == null) {
                 this.lexic.getColumnAndLine(this.token.getLexeme());
                 throw new RuntimeException("Variable not declared near: " + this.token.getLexeme());
-            }
-            if (node.getType() != this.token.getType()) {
-                this.lexic.getColumnAndLine(this.token.getLexeme());
-                throw new RuntimeException("Variable with type different, near: " + this.token.getLexeme());
             }
 
             this.token = this.lexic.getNextToken();
@@ -268,10 +282,18 @@ public class Syntactic {
     }
 
     private void EXP() throws FileNotFoundException {
-        if (this.token.getType() == Token.INTEGER_TYPE ||
-                this.token.getType() == Token.REAL_TYPE ||
-                this.token.getType() == Token.IDENTIFIER_TYPE ||
-                this.token.getType() == Token.CHAR_TYPE) {
+        if (this.token.getType() == Token.CHAR_TYPE) {
+            if (tokenAux.getType() != this.token.getType()) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Variable with type different, near: " + this.token.getLexeme());
+            }
+            this.token = this.lexic.getNextToken();
+            EXP();
+        } else if (this.token.getType() == Token.INTEGER_TYPE) {
+            if (tokenAux.getType() != this.token.getType()) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Variable with type different, near: " + this.token.getLexeme());
+            }
             this.token = this.lexic.getNextToken();
             if (this.token.getLexeme().equals("*") ||
                     this.token.getLexeme().equals("/") ||
@@ -282,6 +304,26 @@ public class Syntactic {
             } else if (this.token.getLexeme().equals(";")) {
                 return;
             }
+        }
+        if (this.token.getType() == Token.REAL_TYPE ||
+                this.token.getType() == Token.IDENTIFIER_TYPE) {
+            if (tokenAux.getType() != this.token.getType()) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Variable with type different, near: " + this.token.getLexeme());
+            }
+            this.token = this.lexic.getNextToken();
+
+            if (this.token.getLexeme().equals("*") ||
+                    this.token.getLexeme().equals("/") ||
+                    this.token.getLexeme().equals("+") ||
+                    this.token.getLexeme().equals("-")) {
+                this.token = this.lexic.getNextToken();
+                EXP();
+            } else if (this.token.getLexeme().equals(";")) {
+                return;
+            }
+        } else if (this.token.getLexeme().equals(";")) {
+            return;
         } else {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error in attribution near: " + this.token.getLexeme());
