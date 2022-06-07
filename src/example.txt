@@ -1,13 +1,13 @@
 int main(){
     int b;
     float c;
-    float c;
-    while(a > 5){
+    char a;
+    while(5 > 2){
         int pp;
         int b;
         char a;
         a = "1";
-        b = c * 1 + a -4 /c;
+        b = 5;
     }
 }
 $

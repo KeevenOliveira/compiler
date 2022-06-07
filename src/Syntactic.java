@@ -184,28 +184,81 @@ public class Syntactic {
 
     // Expression Relational
     private void ER() throws FileNotFoundException {
-        if (!(this.token.getType() == Token.IDENTIFIER_TYPE ||
-                this.token.getType() == Token.REAL_TYPE ||
-                this.token.getType() == Token.INTEGER_TYPE)) {
-            this.lexic.getColumnAndLine(this.token.getLexeme());
-            throw new RuntimeException("Error inside condition of 'if' near: " + this.token.getLexeme());
-        }
+        if (this.token.getType() == Token.IDENTIFIER_TYPE) {
 
-        this.token = this.lexic.getNextToken();
+            CircularListNode node = semantic.search(this.token.getLexeme());
 
-        if (this.token.getType() != Token.OPERATOR_RELATIONAL_TYPE) {
+            if (node == null) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Error: Variable does not exists near: " + this.token.getLexeme());
+            }
+
+            this.token = this.lexic.getNextToken();
+
+            if (this.token.getType() != Token.OPERATOR_RELATIONAL_TYPE) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
+            }
+
+            this.token = this.lexic.getNextToken();
+
+            if (node.getType() == Token.CHAR_TYPE && this.token.getType() == Token.CHAR_TYPE) {
+                this.token = this.lexic.getNextToken();
+            } else if (node.getType() == Token.INTEGER_TYPE && this.token.getType() == Token.INTEGER_TYPE) {
+                this.token = this.lexic.getNextToken();
+            } else if (node.getType() == Token.REAL_TYPE && this.token.getType() == Token.REAL_TYPE) {
+                this.token = this.lexic.getNextToken();
+            } else {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Error: Type of variables does not match near: " + this.token.getLexeme());
+            }
+            return;
+
+        } else if (this.token.getType() == Token.REAL_TYPE ||
+                this.token.getType() == Token.INTEGER_TYPE) {
+
+            this.token = this.lexic.getNextToken();
+
+            if (this.token.getType() != Token.OPERATOR_RELATIONAL_TYPE) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
+            }
+
+            this.token = this.lexic.getNextToken();
+
+            if (this.token.getType() == Token.CHAR_TYPE) {
+                this.lexic.getColumnAndLine(this.token.getLexeme());
+                throw new RuntimeException("Error: Type of variables does not match near: " + this.token.getLexeme());
+            } else if (this.token.getType() == Token.IDENTIFIER_TYPE) {
+                CircularListNode node = semantic.search(this.token.getLexeme());
+
+                if (node == null) {
+                    this.lexic.getColumnAndLine(this.token.getLexeme());
+                    throw new RuntimeException("Error: Variable does not exists near: " + this.token.getLexeme());
+                }
+
+                if (node.getType() == Token.CHAR_TYPE) {
+                    this.lexic.getColumnAndLine(this.token.getLexeme());
+                    throw new RuntimeException(
+                            "Error: Type of variables does not match near: " + this.token.getLexeme());
+                } else if (node.getType() == Token.INTEGER_TYPE) {
+                    return;
+                } else if (node.getType() == Token.REAL_TYPE) {
+                    return;
+                } else {
+                    this.lexic.getColumnAndLine(this.token.getLexeme());
+                    throw new RuntimeException(
+                            "Error: Type of variables does not match near: " + this.token.getLexeme());
+                }
+            } else if (this.token.getType() == Token.REAL_TYPE ||
+                    this.token.getType() == Token.INTEGER_TYPE) {
+                return;
+            }
+        } else {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Error in operator regular near: " + this.token.getLexeme());
         }
 
-        this.token = this.lexic.getNextToken();
-
-        if (!(this.token.getType() == Token.IDENTIFIER_TYPE ||
-                this.token.getType() == Token.REAL_TYPE ||
-                this.token.getType() == Token.INTEGER_TYPE)) {
-            this.lexic.getColumnAndLine(this.token.getLexeme());
-            throw new RuntimeException("Error after operator regular of 'if' near: " + this.token.getLexeme());
-        }
     }
 
     public void Declaration() throws FileNotFoundException {

@@ -200,13 +200,13 @@ public class Lexic {
                         state = 7;
                     } else {
                         this.back();
-                        return new Token(lexeme.toString(), Token.REAL_TYPE);
+                        return new Token(lexeme.toString(), Token.INTEGER_TYPE);
                     }
                     break;
                 case 7:
                     if (this.isDigit(character)) {
                         lexeme.append(character);
-                        state = 6;
+                        state = 8;
                     } else {
                         throw new RuntimeException("Erro: número float inválido \"" + lexeme.toString() + "\"");
                     }
@@ -214,7 +214,7 @@ public class Lexic {
                 case 8:
                     if (this.isDigit(character)) {
                         lexeme.append(character);
-                        state = 6;
+                        state = 8;
                     } else {
                         this.back();
                         return new Token(lexeme.toString(), Token.REAL_TYPE);
