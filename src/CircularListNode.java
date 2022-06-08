@@ -38,7 +38,6 @@ public class CircularListNode {
         this.next = next;
     }
 
-
     public int getType() {
         return type;
     }

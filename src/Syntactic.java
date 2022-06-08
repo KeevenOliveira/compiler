@@ -41,7 +41,7 @@ public class Syntactic {
 
         B();
         if (this.token.getType() == Token.END_CODE) {
-            System.out.println("The code is working, analystic syntatic completed!");
+            System.out.println("The code is working, analystic syntatic and semantic completed!");
         } else {
             this.lexic.getColumnAndLine(this.token.getLexeme());
             throw new RuntimeException("Your code does not working normal, near: " + this.token.getLexeme());
